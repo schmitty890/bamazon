@@ -1,6 +1,6 @@
-var inquirer = require('inquirer');
-var mysql = require('mysql');
-var Table = require('cli-table');
+const inquirer = require('inquirer');
+const mysql = require('mysql');
+const Table = require('cli-table');
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -10,79 +10,150 @@ const connection = mysql.createConnection({
     database: 'bamazon_db'
 });
 
-function start() {
-    inquirer.prompt([{
-        type: "list",
-        name: "decision",
-        message: "What would you like to do?",
-        choices: ["View items for sale", "Leave store"]
-    }]).then(function(answer) {
-        var customerDecision = answer.decision;
-        if (customerDecision === 'View items for sale') {
-            console.log('show all the items');
-            viewItems();
-        }
-    });
-}
+/**
+ * [bamazonCustomer holds all the functionality for the customers]
+ */
+const bamazonCustomer = (function() {
 
-function viewItems() {
-    connection.query(`SELECT * FROM products`, function(err, resp) {
-        if (err) throw err;
-        var table = new Table({
-            head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
-            colWidths: [10, 20, 20, 20, 20]
+    /**
+     * [connect to the mysql]
+     */
+    function connect() {
+        connection.connect(function(err) {
+            if (err) throw err;
+            start();
         });
-        var itemIDs = [];
-        resp.forEach(function(item) {
-            itemIDs.push(item.item_id);
-            table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
-        });
-        console.log(table.toString());
-        itemIDs = itemIDs.map(String);
+    }
+
+    /**
+     * [start the prompt for the customer]
+     */
+    function start() {
         inquirer.prompt([{
             type: "list",
-            name: "product_id",
-            message: "What is the product item id you'd like to buy",
-            choices: itemIDs
-        }, {
-            type: "input",
-            name: "units",
-            message: "How many units would you like to purchase?"
-        }]).then(function(transaction) {
-            var unitsWanted = Number(transaction.units);
-            var productId = Number(transaction.product_id);
-            var itemName;
-            var itemQty;
-            var itemPrice;
-            console.log(`The customer would like to buy ${transaction.units} units of item number ${transaction.product_id}`);
-            for (var i = 0; i < resp.length; i++) {
-                if (productId === resp[i].item_id) {
-                    itemName = resp[i].product_name;
-                    itemQty = resp[i].stock_quantity;
-                    itemPrice = resp[i].price;
-                }
-            }
-            var productsLeft = itemQty - unitsWanted;
-            if (productsLeft > 0) {
-                var totalPrice = itemPrice * unitsWanted;
-                console.log(`Congrats on purchasing ${unitsWanted} units of ${itemName} for a total price of $${totalPrice}`);
-                lowerQuantity(productId, unitsWanted, itemQty, itemPrice);
-            } else {
-                console.log(`Insufficient quantity! there are ${itemQty} left for this product`);
-                start();
+            name: "decision",
+            message: "What would you like to do?",
+            choices: ["View items for sale", "Exit"]
+        }]).then((answer) => {
+            const customerDecision = answer.decision;
+            switch (customerDecision) {
+                case 'View items for sale':
+                    viewItems();
+                    break;
+                case 'Exit':
+                    exit();
+                    break;
+                default:
+                    exit();
             }
         });
-    });
-}
+    }
 
-function lowerQuantity(item, purchaseQty, stockQty, price) {
-    connection.query("UPDATE products SET ? WHERE ?", [{
-        stock_quantity: stockQty - purchaseQty
-    }, {
-        item_id: item
-    }], function(err, resp) {
-        if (err) throw err;
-    });
-}
+    /**
+     * [viewItems returns all the items from the products table and prompts the user if they would like to buy]
+     */
+    function viewItems() {
+        connection.query(`SELECT * FROM products`, function(err, resp) {
+            if (err) throw err;
+            let table = new Table({
+                head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
+                colWidths: [10, 20, 20, 20, 20]
+            });
+            let itemIDs = [];
+            resp.forEach(function(item) {
+                itemIDs.push(item.item_id);
+                table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
+            });
+            console.log(table.toString());
+            itemIDs = itemIDs.map(String);
+            inquirer.prompt([{
+                type: "list",
+                name: "product_id",
+                message: "What is the product item id you'd like to buy",
+                choices: itemIDs
+            }, {
+                type: "input",
+                name: "units",
+                message: "How many units would you like to purchase?"
+            }]).then(function(transaction) {
+                let unitsWanted = Number(transaction.units),
+                    productId = Number(transaction.product_id),
+                    itemName,
+                    itemQty,
+                    itemPrice,
+                    productSales;
+                console.log(`The customer would like to buy ${transaction.units} units of item number ${transaction.product_id}`);
+                for (let i = 0; i < resp.length; i++) {
+                    if (productId === resp[i].item_id) {
+                        itemName = resp[i].product_name;
+                        itemQty = resp[i].stock_quantity;
+                        itemPrice = resp[i].price;
+                        productSales = resp[i].product_sales;
+                    }
+                }
+                let productsLeft = itemQty - unitsWanted;
+                if (productsLeft > 0) {
+                    lowerQuantity(productId, unitsWanted, itemQty, itemPrice);
+                    salesRevenue(productId, unitsWanted, productSales, itemPrice);
+                } else {
+                    console.log(`Insufficient quantity! there are ${itemQty} left for this product`);
+                    start();
+                }
+            });
+        });
+    }
 
-start();
+    /**
+     * [salesRevenue updates the total sales revenue of the product]
+     */
+    function salesRevenue(productId, unitsWanted, productSales, itemPrice) {
+        let customerCost = unitsWanted * itemPrice;
+        connection.query(`UPDATE products SET ? WHERE ?`, [{
+            product_sales: productSales + customerCost
+        }, {
+            item_id: productId
+        }], function(err, resp) {
+            if (err) throw err;
+            console.log(`The total cost is $${customerCost}`);
+            start();
+        });
+    }
+
+    /**
+     * [lowerQuantity lowers the product quantity by however much the user purchased]
+     */
+    function lowerQuantity(item, purchaseQty, stockQty, price) {
+        connection.query("UPDATE products SET ? WHERE ?", [{
+            stock_quantity: stockQty - purchaseQty
+        }, {
+            item_id: item
+        }], function(err, resp) {
+            if (err) throw err;
+        });
+    }
+
+    /**
+     * [exit ends the mysql connection]
+     */
+    function exit() {
+        connection.end();
+    }
+
+    /**
+     * [init]
+     */
+    function init() {
+        // connect();
+        start();
+    }
+
+    return {
+        init: init
+    }
+
+})();
+
+/**
+ * initialize bamazonCustomer
+ */
+bamazonCustomer.init();

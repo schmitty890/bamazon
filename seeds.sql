@@ -12,3 +12,13 @@ VALUES
 	('air filter', 'heating and cooling', 11.75, 100),
 	('refridgerator', 'appliances', 2399.99, 15),
 	('microwave', 'appliances', 377.00, 25);
+
+INSERT INTO departments(department_name, over_head_costs)
+VALUES
+	('tools', 200),
+	('appliances', 1000),
+	('paint', 400),
+	('power tools', 400),
+	('electrical', 700),
+	('hardware', 800),
+	('heating and cooling', 900);
