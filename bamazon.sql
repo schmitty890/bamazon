@@ -13,8 +13,8 @@ CREATE TABLE products(
 );
 
 CREATE TABLE departments(
-	department_id INTEGER AUTO_INCREMENT NOT NULL,
-	department_name VARCHAR(50) NULL,
-	over_head_costs FLOAT(11) NULL,
-	PRIMARY KEY (department_id)
+  department_id INTEGER AUTO_INCREMENT NOT NULL,
+  department_name VARCHAR(50) NULL,
+  over_head_costs FLOAT(11) NULL,
+  PRIMARY KEY (department_id)
 );
