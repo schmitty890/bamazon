@@ -20,9 +20,11 @@ You're ready to go!
 ### How to use?
 
 Run `node bamazonCustomer.js` to see the customer view
-Customer view options
--View items for sale
--Exit
+
+##### Customer view options
+
+* View items for sale
+* Exit
 
 Products for sale table will look like this
 ![products for sale](https://user-images.githubusercontent.com/16051859/39825377-a942756e-537f-11e8-852c-800ed461671d.png)
