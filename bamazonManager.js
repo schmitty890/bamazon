@@ -114,10 +114,8 @@ const bamazonManager = (() => {
                 head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
                 colWidths: [10, 20, 20, 20, 20]
             });
-            let itemIDs = [];
-            resp.forEach(function(item) {
-                itemIDs.push(item.item_id);
-                table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
+            let itemIDs = resp.map(item => {
+                return table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
             });
 
             console.log(table.toString());
@@ -137,11 +135,11 @@ const bamazonManager = (() => {
                     quantity = answers.increaseQuantity,
                     currentQuantity;
                 console.log(`Increasing product ${item} by ${quantity} units...`);
-                for (var i = 0; i < resp.length; i++) {
-                    if (resp[i].item_id === item) {
-                        currentQuantity = resp[i].stock_quantity;
+                resp.map(products => {
+                    if(products.item_id === item) {
+                       currentQuantity = products.stock_quantity;
                     }
-                }
+                });
                 increaseQuantity(item, quantity, currentQuantity);
                 start();
             });
@@ -171,8 +169,8 @@ const bamazonManager = (() => {
                 head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
                 colWidths: [10, 20, 20, 20, 20]
             });
-            resp.forEach(function(item) {
-                table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
+            resp.map(item => {
+                return table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
             });
             console.log(table.toString());
             start();
@@ -189,8 +187,8 @@ const bamazonManager = (() => {
                 head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
                 colWidths: [10, 20, 20, 20, 20]
             });
-            resp.forEach(function(item) {
-                table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
+            resp.map(item => {
+                return table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
             });
             console.log(table.toString());
             start();

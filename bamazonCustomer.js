@@ -59,10 +59,8 @@ const bamazonCustomer = (() => {
                 head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
                 colWidths: [10, 20, 20, 20, 20]
             });
-            let itemIDs = [];
-            resp.forEach(function(item) {
-                itemIDs.push(item.item_id);
-                table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
+            let itemIDs = resp.map(item => {
+                return table.push([item.item_id, item.product_name, item.department_name, item.price, item.stock_quantity]);
             });
             console.log(table.toString());
             itemIDs = itemIDs.map(String);
@@ -83,14 +81,14 @@ const bamazonCustomer = (() => {
                     itemPrice,
                     productSales;
                 console.log(`The customer would like to buy ${transaction.units} units of item number ${transaction.product_id}`);
-                for (let i = 0; i < resp.length; i++) {
-                    if (productId === resp[i].item_id) {
-                        itemName = resp[i].product_name;
-                        itemQty = resp[i].stock_quantity;
-                        itemPrice = resp[i].price;
-                        productSales = resp[i].product_sales;
+                resp.map(item => {
+                    if(productId === item.item_id) {
+                        itemName = item.product_name;
+                        itemQty = item.stock_quantity;
+                        itemPrice = item.price;
+                        productSales = item.product_sales;
                     }
-                }
+                });
                 let productsLeft = itemQty - unitsWanted;
                 if (productsLeft > 0) {
                     lowerQuantity(productId, unitsWanted, itemQty, itemPrice);

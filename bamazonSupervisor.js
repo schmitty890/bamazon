@@ -69,8 +69,8 @@ var bamazonSupervisor = (() => {
         });
         connection.query(joinQuery, (error, results) => {
             if (error) throw error;
-            results.forEach((department) => {
-                table.push([department.department_id, department.department_name, department.over_head_costs, department.product_sales.toFixed(2), department.total_profit.toFixed(2)]);
+            results.map(department => {
+                return table.push([department.department_id, department.department_name, department.over_head_costs, department.product_sales.toFixed(2), department.total_profit.toFixed(2)]);
             });
             console.log(table.toString());
             start();
@@ -89,9 +89,9 @@ var bamazonSupervisor = (() => {
                     // validating the dept doesn't already exist
                     validate: (value) => {
                         var deptArray = [];
-                        for (var i = 0; i < results.length; i++) {
-                            deptArray.push(results[i].department_name.toLowerCase());
-                        }
+                        results.map(item => {
+                            deptArray.push(item.department_name.toLowerCase());
+                        });
                         if (deptArray.indexOf(value.toLowerCase()) === -1) {
                             return true;
                         }
