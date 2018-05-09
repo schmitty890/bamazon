@@ -13,13 +13,13 @@ const connection = mysql.createConnection({
 /**
  * [bamazonManager holds all the functionality for the manager]
  */
-const bamazonManager = (function() {
+const bamazonManager = (() => {
 
     /**
      * [connect to the mysql]
      */
-    function connect() {
-        connection.connect(function(err) {
+    connect = () => {
+        connection.connect((err) => {
             if (err) throw err;
             start();
         });
@@ -28,13 +28,13 @@ const bamazonManager = (function() {
     /**
      * [start the prompt for the manager]
      */
-    function start() {
+    start = () => {
         inquirer.prompt([{
             type: "list",
             name: "view",
             message: "Hello manager, what would you like to do?",
             choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit"]
-        }]).then(function(resp) {
+        }]).then((resp) => {
             const view = resp.view;
             switch (view) {
                 case 'View Products for Sale':
@@ -61,7 +61,7 @@ const bamazonManager = (function() {
     /**
      * [addNewProduct prompts the user to enter new product information and passes that information to addNewItemToDatabase]
      */
-    function addNewProduct() {
+    addNewProduct = () => {
         connection.query(`SELECT * FROM products`, function() {
             inquirer.prompt([{
                 type: "input",
@@ -79,7 +79,7 @@ const bamazonManager = (function() {
                 type: "input",
                 message: "Enter the stock quantity",
                 name: "stockQuantity"
-            }]).then(function(newItem) {
+            }]).then((newItem) => {
                 let name = newItem.itemName,
                     price = Number(newItem.itemCost),
                     department = newItem.departmentName,
@@ -93,13 +93,13 @@ const bamazonManager = (function() {
     /**
      * [addNewItemToDatabase adds an item into the products table of the database]
      */
-    function addNewItemToDatabase(name, price, department, quantity) {
+    addNewItemToDatabase = (name, price, department, quantity) => {
         connection.query(`INSERT INTO products SET ?`, {
             product_name: name,
             department_name: department,
             price: price,
             stock_quantity: quantity
-        }, function(err, resp) {
+        },(err, resp) => {
             if (err) throw err;
         });
     }
@@ -107,8 +107,8 @@ const bamazonManager = (function() {
     /**
      * [addToInventory adds an item the inventory in the products table of the database]
      */
-    function addToInventory() {
-        connection.query(`SELECT * FROM products`, function(err, resp) {
+    addToInventory = () => {
+        connection.query(`SELECT * FROM products`, (err, resp) => {
             if (err) throw err;
             let table = new Table({
                 head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
@@ -132,7 +132,7 @@ const bamazonManager = (function() {
                 type: "input",
                 name: "increaseQuantity",
                 message: "How much inventory would you like to add to the item?"
-            }]).then(function(answers) {
+            }]).then((answers) => {
                 let item = Number(answers.increaseItemId),
                     quantity = answers.increaseQuantity,
                     currentQuantity;
@@ -151,7 +151,7 @@ const bamazonManager = (function() {
     /**
      * [increaseQuantity increases the quantity of a product in the database]
      */
-    function increaseQuantity(item, quantity, currentQuantity) {
+    increaseQuantity = (item, quantity, currentQuantity) => {
         connection.query("UPDATE products SET ? WHERE ?", [{
             stock_quantity: Number(currentQuantity) + Number(quantity)
         }, {
@@ -164,8 +164,8 @@ const bamazonManager = (function() {
     /**
      * [viewLowInventory displays inventory that has less than 5 units left in the database]
      */
-    function viewLowInventory() {
-        connection.query(`SELECT * FROM products WHERE stock_quantity < 5`, function(err, resp) {
+    viewLowInventory = () => {
+        connection.query(`SELECT * FROM products WHERE stock_quantity < 5`, (err, resp) => {
             if (err) throw err;
             let table = new Table({
                 head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
@@ -182,8 +182,8 @@ const bamazonManager = (function() {
     /**
      * [viewProducts returns all the items from the products table]
      */
-    function viewProducts() {
-        connection.query(`SELECT * FROM products`, function(err, resp) {
+    viewProducts = () => {
+        connection.query(`SELECT * FROM products`, (err, resp) => {
             if (err) throw err;
             let table = new Table({
                 head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
@@ -200,11 +200,11 @@ const bamazonManager = (function() {
     /**
      * [exit ends the mysql connection]
      */
-    function exit() {
+    exit = () => {
         connection.end();
     }
 
-    function init() {
+    init = () => {
         // connect();
         start();
     }

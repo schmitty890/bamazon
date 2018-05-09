@@ -13,13 +13,13 @@ const connection = mysql.createConnection({
 /**
  * [bamazonCustomer holds all the functionality for the customers]
  */
-const bamazonCustomer = (function() {
+const bamazonCustomer = (() => {
 
     /**
      * [connect to the mysql]
      */
-    function connect() {
-        connection.connect(function(err) {
+    connect = () => {
+        connection.connect((err) => {
             if (err) throw err;
             start();
         });
@@ -28,7 +28,7 @@ const bamazonCustomer = (function() {
     /**
      * [start the prompt for the customer]
      */
-    function start() {
+    start = () => {
         inquirer.prompt([{
             type: "list",
             name: "decision",
@@ -52,8 +52,8 @@ const bamazonCustomer = (function() {
     /**
      * [viewItems returns all the items from the products table and prompts the user if they would like to buy]
      */
-    function viewItems() {
-        connection.query(`SELECT * FROM products`, function(err, resp) {
+    viewItems = () => {
+        connection.query(`SELECT * FROM products`, (err, resp) => {
             if (err) throw err;
             let table = new Table({
                 head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
@@ -75,7 +75,7 @@ const bamazonCustomer = (function() {
                 type: "input",
                 name: "units",
                 message: "How many units would you like to purchase?"
-            }]).then(function(transaction) {
+            }]).then((transaction) => {
                 let unitsWanted = Number(transaction.units),
                     productId = Number(transaction.product_id),
                     itemName,
@@ -106,7 +106,7 @@ const bamazonCustomer = (function() {
     /**
      * [salesRevenue updates the total sales revenue of the product]
      */
-    function salesRevenue(productId, unitsWanted, productSales, itemPrice) {
+    salesRevenue = (productId, unitsWanted, productSales, itemPrice) => {
         let customerCost = unitsWanted * itemPrice;
         connection.query(`UPDATE products SET ? WHERE ?`, [{
             product_sales: productSales + customerCost
@@ -122,7 +122,7 @@ const bamazonCustomer = (function() {
     /**
      * [lowerQuantity lowers the product quantity by however much the user purchased]
      */
-    function lowerQuantity(item, purchaseQty, stockQty, price) {
+    lowerQuantity = (item, purchaseQty, stockQty, price) => {
         connection.query("UPDATE products SET ? WHERE ?", [{
             stock_quantity: stockQty - purchaseQty
         }, {
@@ -135,14 +135,14 @@ const bamazonCustomer = (function() {
     /**
      * [exit ends the mysql connection]
      */
-    function exit() {
+    exit = () => {
         connection.end();
     }
 
     /**
      * [init]
      */
-    function init() {
+    init = () => {
         // connect();
         start();
     }
