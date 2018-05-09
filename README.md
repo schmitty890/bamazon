@@ -26,21 +26,21 @@ You're ready to go!
 
 ### How to use?
 
-##### Customer view options
 Run `node bamazonCustomer.js`
+##### Customer view options
 * View items for sale
 * Exit
 
-##### Manager view options
 Run `node bamazonManager.js`
+##### Manager view options
 * View products for sale
 * View Low Inventory
 * Add to Inventory
 * Add New Product
 * Exit
 
-##### Supervisor view options
 Run `node bamazonSupervisor.js`
+##### Supervisor view options
 * View Product Sales by Department
 * Create New Department
 * Exit
