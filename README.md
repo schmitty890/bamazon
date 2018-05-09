@@ -1,6 +1,13 @@
 # bamazon
 
-<!-- word-guess-cli is a command line node.js application that is a word guessing game. there are two types of words, ones that come with hints, and ones that don't. the ones that don't come with hints come from npm random-word, while the ones that do come from a json file within the application. -->
+bamazon is a command line node.js application that mimics a storefront. There are three types of users, a customer, a manager and a supervisor. Each with different abilities to interact with a mysql database.
+
+Customers are allowed to view items and purchase items.
+
+Mangers are allowed to view items, view low inventory, add items to inventory and add new products.
+
+Supervisors are allowed to view product sales by department and create a new department.
+
 
 ### Installation
 
@@ -19,39 +26,38 @@ You're ready to go!
 
 ### How to use?
 
-Run `node bamazonCustomer.js` to see the customer view
-
 ##### Customer view options
-
+Run `node bamazonCustomer.js`
 * View items for sale
+* Exit
+
+##### Manager view options
+Run `node bamazonManager.js`
+* View products for sale
+* View Low Inventory
+* Add to Inventory
+* Add New Product
+* Exit
+
+##### Supervisor view options
+Run `node bamazonSupervisor.js`
+* View Product Sales by Department
+* Create New Department
 * Exit
 
 Products for sale table will look like this
 ![products for sale](https://user-images.githubusercontent.com/16051859/39825377-a942756e-537f-11e8-852c-800ed461671d.png)
 
+Products of low inventory table will show any product that has less than 5 Stock Quantity
 ![products with low inventory](https://user-images.githubusercontent.com/16051859/39825376-a93295e0-537f-11e8-89b3-983681c7550a.png)
 
+Supervisor view of sales by department show aggregated sales by each department
 ![supervisor view](https://user-images.githubusercontent.com/16051859/39825378-a950dcd0-537f-11e8-8fa6-92b0ea2dd3c4.png)
-
-<!-- <img src="https://thumbs.gfycat.com/FatalDefiantBlackandtancoonhound-size_restricted.gif" width="600" height="400" /> -->
-
-<!-- 
-
-<img src="https://thumbs.gfycat.com/FatalDefiantBlackandtancoonhound-size_restricted.gif" width="600" height="400" />
-
-Run `npm start` in your terminal and you will be asked to choose a word with a hint, or a word with no hint. the words with hints come from a json object in the application. the words with no hints comes from npm random-word.
 
 
 ### Technology used
 
 * Node.js
-* [npm random-word](https://www.npmjs.com/package/random-word)
-* [npm chalk](https://www.npmjs.com/package/chalk)
+* [npm cli-table](https://www.npmjs.com/package/cli-table)
+* [npm mysql](https://www.npmjs.com/package/mysql)
 * [npm inquirer](https://www.npmjs.com/package/inquirer)
-
-
-
-
-
-
- -->
