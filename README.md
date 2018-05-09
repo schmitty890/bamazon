@@ -19,9 +19,17 @@ You're ready to go!
 
 ### How to use?
 
-<img src="https://thumbs.gfycat.com/FatalDefiantBlackandtancoonhound-size_restricted.gif" width="600" height="400" />
-
 Run `node bamazonCustomer.js` to see the customer view
+Customer view options
+-View items for sale
+-Exit
+
+Products for sale table will look like this
+![products for sale](https://user-images.githubusercontent.com/16051859/39825377-a942756e-537f-11e8-852c-800ed461671d.png)
+
+![products with low inventory](https://user-images.githubusercontent.com/16051859/39825376-a93295e0-537f-11e8-89b3-983681c7550a.png)
+
+![supervisor view](https://user-images.githubusercontent.com/16051859/39825378-a950dcd0-537f-11e8-8fa6-92b0ea2dd3c4.png)
 
 <!-- <img src="https://thumbs.gfycat.com/FatalDefiantBlackandtancoonhound-size_restricted.gif" width="600" height="400" /> -->
 
