@@ -1,6 +1,6 @@
-var inquirer = require('inquirer');
-var mysql = require('mysql');
-var Table = require('cli-table');
+const inquirer = require('inquirer');
+const mysql = require('mysql');
+const Table = require('cli-table');
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
 /**
  * [bamazonSupervisor holds all the functionality for the supervisor]
  */
-var bamazonSupervisor = (() => {
+const bamazonSupervisor = (() => {
 
     /**
      * [connect to the mysql]
@@ -35,7 +35,7 @@ var bamazonSupervisor = (() => {
             message: "Hello supervisor, what would you like to do?",
             choices: ["View Product Sales by Department", "Create New Department", "Exit"]
         }]).then((resp) => {
-            var view = resp.view;
+            const view = resp.view;
             switch (view) {
                 case 'View Product Sales by Department':
                     viewSalesByDepartment();
@@ -56,14 +56,14 @@ var bamazonSupervisor = (() => {
      * [viewSalesByDepartment displays sales by each individual department]
      */
     viewSalesByDepartment = () => {
-        var joinQuery = "SELECT department_id, departments.department_name, over_head_costs," +
+        let joinQuery = "SELECT department_id, departments.department_name, over_head_costs," +
             " SUM(product_sales) AS product_sales," +
             " SUM(product_sales) - over_head_costs AS total_profit ";
         joinQuery += "FROM departments INNER JOIN products ";
         joinQuery += "ON departments.department_name = products.department_name ";
         joinQuery += "GROUP BY department_id ";
 
-        var table = new Table({
+        let table = new Table({
             head: ['department_id', 'department_name', 'over_head_costs', 'product_sales', 'total_profit'],
             colWidths: [20, 20, 20, 20, 20]
         });
@@ -88,9 +88,8 @@ var bamazonSupervisor = (() => {
                     message: "Please input new department name.",
                     // validating the dept doesn't already exist
                     validate: (value) => {
-                        var deptArray = [];
-                        results.map(item => {
-                            deptArray.push(item.department_name.toLowerCase());
+                        let deptArray = results.map(item => {
+                            return item.department_name.toLowerCase();
                         });
                         if (deptArray.indexOf(value.toLowerCase()) === -1) {
                             return true;
